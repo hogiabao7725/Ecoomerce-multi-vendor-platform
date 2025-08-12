@@ -43,18 +43,27 @@ const CountDown = ({ data }) => {
     }
 
     return (
-      <span className="text-[25px] text-[#475ad2]">
-        {timeLeft[interval]} {interval}{" "}
-      </span>
+      <div key={interval} className="inline-flex flex-col items-center mx-1">
+        <div className="bg-blue-100 text-blue-600 font-bold text-sm px-2 py-1 rounded-lg min-w-[2.5rem] text-center">
+          {timeLeft[interval]}
+        </div>
+        <span className="text-xs text-gray-500 mt-1 capitalize">
+          {interval}
+        </span>
+      </div>
     );
   });
 
   return (
-    <div>
+    <div className="flex items-center justify-center">
       {timerComponents.length ? (
-        timerComponents
+        <div className="flex items-center space-x-1">
+          {timerComponents}
+        </div>
       ) : (
-        <span className="text-[red] text-[25px]">Time's Up</span>
+        <span className="text-red-500 text-sm font-medium bg-red-50 px-3 py-1 rounded-full">
+          Time's Up
+        </span>
       )}
     </div>
   );
