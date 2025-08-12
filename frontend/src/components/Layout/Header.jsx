@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "../../styles/styles";
 import { categoriesData, productData } from "../../static/data";
@@ -30,10 +30,18 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const searchRef = useRef(null);
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
+
+    if (term.trim() === "") {
+      setSearchData(null);
+      setShowSearchResults(false);
+      return;
+    }
 
     const filteredProducts =
       allProducts &&
@@ -41,6 +49,28 @@ const Header = ({ activeHeading }) => {
         product.name.toLowerCase().includes(term.toLowerCase())
       );
     setSearchData(filteredProducts);
+    setShowSearchResults(true);
+  };
+
+  // Handle click outside to close search results
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowSearchResults(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Clear search when clicking on a product
+  const handleProductClick = () => {
+    setSearchTerm("");
+    setSearchData(null);
+    setShowSearchResults(false);
   };
 
   window.addEventListener("scroll", () => {
@@ -64,37 +94,84 @@ const Header = ({ activeHeading }) => {
             </Link>
           </div>
           {/* search box */}
-          <div className="w-[50%] relative">
-            <input
-              type="text"
-              placeholder="Search Product..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-              className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md"
-            />
-            <AiOutlineSearch
-              size={30}
-              className="absolute right-2 top-1.5 cursor-pointer"
-            />
-            {searchData && searchData.length !== 0 ? (
-              <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
-                {searchData &&
-                  searchData.map((i, index) => {
-                    return (
-                      <Link to={`/product/${i._id}`}>
-                        <div className="w-full flex items-start-py-3">
-                          <img
-                            src={`${i.images[0]?.url}`}
-                            alt=""
-                            className="w-[40px] h-[40px] mr-[10px]"
-                          />
-                          <h1>{i.name}</h1>
+          <div className="w-[50%] relative" ref={searchRef}>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search Product..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onFocus={() => searchTerm && searchData && setShowSearchResults(true)}
+                className="h-[45px] w-full px-4 pr-12 border-2 border-blue-500 rounded-xl focus:border-purple-500 focus:outline-none transition-all duration-200 text-gray-700 placeholder-gray-500 shadow-sm hover:shadow-md focus:shadow-lg"
+              />
+              <AiOutlineSearch
+                size={24}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+              />
+            </div>
+
+            {/* Search Results Dropdown */}
+            {showSearchResults && searchData && searchData.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 max-h-96 overflow-y-auto">
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      Search Results ({searchData.length})
+                    </h3>
+                    <button
+                      onClick={() => setShowSearchResults(false)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                    >
+                      <RxCross1 size={16} />
+                    </button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {searchData.map((product, index) => (
+                      <Link 
+                        key={product._id} 
+                        to={`/product/${product._id}`}
+                        onClick={handleProductClick}
+                      >
+                        <div className="flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-200 group">
+                          <div className="w-12 h-12 rounded-lg overflow-hidden mr-3 flex-shrink-0">
+                            <img
+                              src={`${product.images[0]?.url}`}
+                              alt={product.name}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-medium text-gray-800 truncate group-hover:text-blue-600 transition-colors duration-200">
+                              {product.name}
+                            </h4>
+                            <p className="text-xs text-gray-500 mt-1">
+                              Click to view details
+                            </p>
+                          </div>
+                          <div className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <IoIosArrowForward size={16} className="text-gray-400" />
+                          </div>
                         </div>
                       </Link>
-                    );
-                  })}
+                    ))}
+                  </div>
+                </div>
               </div>
-            ) : null}
+            )}
+
+            {/* No Results State */}
+            {showSearchResults && searchData && searchData.length === 0 && searchTerm && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50">
+                <div className="p-6 text-center">
+                  <div className="w-16 h-16 mx-auto mb-3 bg-gray-100 rounded-full flex items-center justify-center">
+                    <AiOutlineSearch className="text-gray-400 text-2xl" />
+                  </div>
+                  <h3 className="text-sm font-medium text-gray-600 mb-1">No products found</h3>
+                  <p className="text-xs text-gray-500">Try adjusting your search terms</p>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className={`${styles.button}`}>
@@ -266,33 +343,81 @@ const Header = ({ activeHeading }) => {
                 />
               </div>
 
-              <div className="my-8 w-[92%] m-auto h-[40px relative]">
-                <input
-                  type="search"
-                  placeholder="Search Product..."
-                  className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md"
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                />
-                {searchData && (
-                  <div className="absolute bg-[#fff] z-10 shadow w-full left-0 p-3">
-                    {searchData.map((i) => {
-                      const d = i.name;
+              <div className="my-8 w-[92%] m-auto relative">
+                <div className="relative">
+                  <input
+                    type="search"
+                    placeholder="Search Product..."
+                    className="h-[45px] w-full px-4 pr-12 border-2 border-blue-500 rounded-xl focus:border-purple-500 focus:outline-none transition-all duration-200 text-gray-700 placeholder-gray-500 shadow-sm"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                  />
+                  <AiOutlineSearch
+                    size={20}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
+                </div>
+                
+                {/* Mobile Search Results */}
+                {showSearchResults && searchData && searchData.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 max-h-80 overflow-y-auto">
+                    <div className="p-3">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-semibold text-gray-700">
+                          Results ({searchData.length})
+                        </h3>
+                        <button
+                          onClick={() => setShowSearchResults(false)}
+                          className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                        >
+                          <RxCross1 size={16} />
+                        </button>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        {searchData.map((product) => {
+                          const Product_name = product.name.replace(/\s+/g, "-");
+                          return (
+                            <Link 
+                              key={product._id} 
+                              to={`/product/${Product_name}`}
+                              onClick={handleProductClick}
+                            >
+                              <div className="flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-200">
+                                <div className="w-12 h-12 rounded-lg overflow-hidden mr-3 flex-shrink-0">
+                                  <img
+                                    src={product.image_Url?.[0]?.url || product.images?.[0]?.url}
+                                    alt={product.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <h4 className="text-sm font-medium text-gray-800 truncate">
+                                    {product.name}
+                                  </h4>
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    Click to view
+                                  </p>
+                                </div>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-                      const Product_name = d.replace(/\s+/g, "-");
-                      return (
-                        <Link to={`/product/${Product_name}`}>
-                          <div className="flex items-center">
-                            <img
-                              src={i.image_Url[0]?.url}
-                              alt=""
-                              className="w-[50px] mr-2"
-                            />
-                            <h5>{i.name}</h5>
-                          </div>
-                        </Link>
-                      );
-                    })}
+                {/* Mobile No Results State */}
+                {showSearchResults && searchData && searchData.length === 0 && searchTerm && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50">
+                    <div className="p-4 text-center">
+                      <div className="w-12 h-12 mx-auto mb-2 bg-gray-100 rounded-full flex items-center justify-center">
+                        <AiOutlineSearch className="text-gray-400 text-xl" />
+                      </div>
+                      <h3 className="text-sm font-medium text-gray-600">No products found</h3>
+                      <p className="text-xs text-gray-500">Try different keywords</p>
+                    </div>
                   </div>
                 )}
               </div>
