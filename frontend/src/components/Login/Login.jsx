@@ -7,9 +7,12 @@ import { HiOutlineArrowLeft } from "react-icons/hi";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { loadUser } from "../../redux/actions/user";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
@@ -28,10 +31,18 @@ const Login = () => {
         },
         { withCredentials: true }
       )
-      .then((res) => {
+      .then(async (res) => {
         toast.success("Login Success!");
-        navigate("/");
-        window.location.reload(true); 
+        
+        // Load user data into Redux store
+        await dispatch(loadUser());
+        
+        // Check user role and redirect accordingly
+        if (res.data.user && res.data.user.role === "Admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/");
+        }
       })
       .catch((err) => {
         toast.error(err.response.data.message);
