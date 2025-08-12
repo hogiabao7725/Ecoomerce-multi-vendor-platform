@@ -56,7 +56,7 @@ const ShopLogin = () => {
           className="inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm border border-white/20 rounded-xl text-gray-700 hover:bg-white hover:shadow-lg transition-all duration-200 group"
         >
           <HiOutlineArrowLeft className="h-5 w-5 mr-2 group-hover:-translate-x-1 transition-transform" />
-          <span className="font-medium">Trang chủ</span>
+          <span className="font-medium">Home page</span>
         </Link>
       </div>
 
