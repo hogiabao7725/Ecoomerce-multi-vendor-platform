@@ -4,6 +4,7 @@ import {
   AiOutlineHeart,
   AiOutlineMessage,
   AiOutlineShoppingCart,
+  AiOutlineStar,
 } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
@@ -22,7 +23,6 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   const dispatch = useDispatch();
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
-  //   const [select, setSelect] = useState(false);
 
   const handleMessageSubmit = () => {};
 
@@ -72,101 +72,172 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   return (
     <div className="bg-[#fff]">
       {data ? (
-        <div className="fixed w-full h-screen top-0 left-0 bg-[#00000030] z-40 flex items-center justify-center">
-          <div className="w-[90%] 800px:w-[60%] h-[90vh] overflow-y-scroll 800px:h-[75vh] bg-white rounded-md shadow-sm relative p-4">
-            <RxCross1
-              size={30}
-              className="absolute right-3 top-3 z-50"
+        <div className="fixed w-full h-screen top-0 left-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-6xl max-h-[90vh] bg-white rounded-2xl shadow-2xl relative overflow-hidden">
+            {/* Close Button */}
+            <button
               onClick={() => setOpen(false)}
-            />
+              className="absolute top-4 right-4 z-50 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors duration-200"
+            >
+              <RxCross1 size={20} className="text-gray-600" />
+            </button>
 
-            <div className="block w-full 800px:flex">
-              <div className="w-full 800px:w-[50%]">
-                <img src={`${data.images && data.images[0]?.url}`} alt="" />
-                <div className="flex">
-                  <Link to={`/shop/preview/${data.shop._id}`} className="flex">
+            <div className="flex flex-col lg:flex-row">
+              {/* Left Section - Product Images and Shop Info */}
+              <div className="w-full lg:w-1/2 p-6 lg:p-8">
+                {/* Main Product Image */}
+                <div className="relative mb-6">
+                  <img 
+                    src={`${data.images && data.images[0]?.url}`} 
+                    alt={data.name}
+                    className="w-full h-80 lg:h-96 object-cover rounded-xl"
+                  />
+                  
+                  {/* Discount Badge */}
+                  {data.originalPrice > data.discountPrice && (
+                    <div className="absolute top-4 left-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                      {Math.round(((data.originalPrice - data.discountPrice) / data.originalPrice) * 100)}% OFF
+                    </div>
+                  )}
+                </div>
+
+                {/* Shop Information */}
+                <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                  <Link to={`/shop/preview/${data.shop._id}`} className="flex items-center">
                     <img
                       src={`${data.images && data.images[0]?.url}`}
-                      alt=""
-                      className="w-[50px] h-[50px] rounded-full mr-2"
+                      alt={data.shop.name}
+                      className="w-12 h-12 rounded-full mr-3 object-cover"
                     />
                     <div>
-                      <h3 className={`${styles.shop_name}`}>
+                      <h3 className="font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-200">
                         {data.shop.name}
                       </h3>
-                      <h5 className="pb-3 text-[15px]">{data?.ratings} Ratings</h5>
+                      <div className="flex items-center text-sm text-gray-600">
+                        <AiOutlineStar className="text-yellow-400 mr-1" />
+                        <span>{data?.ratings || 0} Ratings</span>
+                      </div>
                     </div>
                   </Link>
                 </div>
-                <div
-                  className={`${styles.button} bg-[#000] mt-4 rounded-[4px] h-11`}
+
+                {/* Send Message Button */}
+                <button
+                  className="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center"
                   onClick={handleMessageSubmit}
                 >
-                  <span className="text-[#fff] flex items-center">
-                    Send Message <AiOutlineMessage className="ml-1" />
-                  </span>
+                  <AiOutlineMessage className="mr-2" />
+                  Send Message
+                </button>
+
+                {/* Stock Status */}
+                <div className="mt-4 text-center">
+                  {data.stock > 0 ? (
+                    <span className="text-sm text-green-600 font-medium bg-green-50 px-3 py-2 rounded-full">
+                      In Stock ({data.stock} available)
+                    </span>
+                  ) : (
+                    <span className="text-sm text-red-600 font-medium bg-red-50 px-3 py-2 rounded-full">
+                      Out of Stock
+                    </span>
+                  )}
                 </div>
-                <h5 className="text-[16px] text-[red] mt-5">(50) Sold out</h5>
               </div>
 
-              <div className="w-full 800px:w-[50%] pt-5 pl-[5px] pr-[5px]">
-                <h1 className={`${styles.productTitle} text-[20px]`}>
-                  {data.name}
-                </h1>
-                <p>{data.description}</p>
-
-                <div className="flex pt-3">
-                  <h4 className={`${styles.productDiscountPrice}`}>
-                    {data.discountPrice}$
-                  </h4>
-                  <h3 className={`${styles.price}`}>
-                    {data.originalPrice ? data.originalPrice + "$" : null}
-                  </h3>
+              {/* Right Section - Product Details */}
+              <div className="w-full lg:w-1/2 p-6 lg:p-8 bg-gray-50">
+                {/* Product Title and Wishlist */}
+                <div className="flex items-start justify-between mb-4">
+                  <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 leading-tight pr-4">
+                    {data.name}
+                  </h1>
+                  
+                  {/* Wishlist Button */}
+                  <button
+                    onClick={() => click ? removeFromWishlistHandler(data) : addToWishlistHandler(data)}
+                    className="flex-shrink-0 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-200"
+                    title={click ? "Remove from wishlist" : "Add to wishlist"}
+                  >
+                    {click ? (
+                      <AiFillHeart size={24} className="text-red-500" />
+                    ) : (
+                      <AiOutlineHeart size={24} className="text-gray-600" />
+                    )}
+                  </button>
                 </div>
-                <div className="flex items-center mt-12 justify-between pr-3">
-                  <div>
+
+                {/* Product Description */}
+                <p className="text-gray-600 text-base leading-relaxed mb-6">
+                  {data.description}
+                </p>
+
+                {/* Price Section */}
+                <div className="mb-6">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h2 className="text-3xl font-bold text-gray-900">
+                      ${data.discountPrice}
+                    </h2>
+                    {data.originalPrice > data.discountPrice && (
+                      <h3 className="text-xl text-gray-500 line-through">
+                        ${data.originalPrice}
+                      </h3>
+                  )}
+                  </div>
+                  
+                  {/* Savings Info */}
+                  {data.originalPrice > data.discountPrice && (
+                    <p className="text-sm text-green-600 font-medium">
+                      Save ${(data.originalPrice - data.discountPrice).toFixed(2)}!
+                    </p>
+                  )}
+                </div>
+
+                {/* Quantity Selector */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Quantity
+                  </label>
+                  <div className="flex items-center space-x-3">
                     <button
-                      className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
+                      className="w-12 h-12 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-lg transition-colors duration-200 flex items-center justify-center"
                       onClick={decrementCount}
+                      disabled={count <= 1}
                     >
                       -
                     </button>
-                    <span className="bg-gray-200 text-gray-800 font-medium px-4 py-[11px]">
+                    <span className="w-16 h-12 bg-white border-2 border-gray-200 text-gray-800 font-semibold rounded-lg flex items-center justify-center">
                       {count}
                     </span>
                     <button
-                      className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
+                      className="w-12 h-12 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-lg transition-colors duration-200 flex items-center justify-center"
                       onClick={incrementCount}
+                      disabled={count >= data.stock}
                     >
                       +
                     </button>
                   </div>
-                  <div>
-                    {click ? (
-                      <AiFillHeart
-                        size={30}
-                        className="cursor-pointer"
-                        onClick={() => removeFromWishlistHandler(data)}
-                        color={click ? "red" : "#333"}
-                        title="Remove from wishlist"
-                      />
-                    ) : (
-                      <AiOutlineHeart
-                        size={30}
-                        className="cursor-pointer"
-                        onClick={() => addToWishlistHandler(data)}
-                        title="Add to wishlist"
-                      />
-                    )}
-                  </div>
                 </div>
-                <div
-                  className={`${styles.button} mt-6 rounded-[4px] h-11 flex items-center`}
+
+                {/* Add to Cart Button */}
+                <button
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center text-lg shadow-lg hover:shadow-xl"
                   onClick={() => addToCartHandler(data._id)}
+                  disabled={data.stock < 1}
                 >
-                  <span className="text-[#fff] flex items-center">
-                    Add to cart <AiOutlineShoppingCart className="ml-1" />
-                  </span>
+                  <AiOutlineShoppingCart className="mr-2" size={20} />
+                  Add to Cart
+                </button>
+
+                {/* Additional Info */}
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                    <div>
+                      <span className="font-medium">SKU:</span> {data._id?.slice(-8)}
+                    </div>
+                    <div>
+                      <span className="font-medium">Category:</span> {data.category || 'General'}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

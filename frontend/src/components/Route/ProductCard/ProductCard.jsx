@@ -20,7 +20,7 @@ import { addTocart } from "../../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "../../Products/Ratings";
 
-const ProductCard = ({ data,isEvent }) => {
+const ProductCard = ({ data, isEvent }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
   const [click, setClick] = useState(false);
@@ -62,80 +62,120 @@ const ProductCard = ({ data,isEvent }) => {
 
   return (
     <>
-      <div className="w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
-        <div className="flex justify-end"></div>
-        <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
-          <img
-            src={`${data.images && data.images[0]?.url}`}
-            alt=""
-            className="w-full h-[170px] object-contain"
-          />
-        </Link>
-        <Link to={`/shop/preview/${data?.shop._id}`}>
-          <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
-        </Link>
-        <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
-          <h4 className="pb-3 font-[500]">
-            {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
-          </h4>
-
-          <div className="flex">
-          <Ratings rating={data?.ratings} />
+      <div className="group w-full bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+        {/* Image Container with Hover Effects */}
+        <div className="relative overflow-hidden bg-gray-50">
+          <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
+            <img
+              src={`${data.images && data.images[0]?.url}`}
+              alt={data.name}
+              className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          </Link>
+          
+          {/* Hover Overlay with Action Buttons */}
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+            <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
+              <div className="flex flex-col space-y-3">
+                {/* Wishlist Button */}
+                <button
+                  onClick={() => click ? removeFromWishlistHandler(data) : addToWishlistHandler(data)}
+                  className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-50 transition-colors duration-200"
+                  title={click ? "Remove from wishlist" : "Add to wishlist"}
+                >
+                  {click ? (
+                    <AiFillHeart size={18} className="text-red-500" />
+                  ) : (
+                    <AiOutlineHeart size={18} className="text-gray-600" />
+                  )}
+                </button>
+                
+                {/* Quick View Button */}
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-50 transition-colors duration-200"
+                  title="Quick view"
+                >
+                  <AiOutlineEye size={18} className="text-gray-600" />
+                </button>
+                
+                {/* Add to Cart Button */}
+                <button
+                  onClick={() => addToCartHandler(data._id)}
+                  className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-green-50 transition-colors duration-200"
+                  title="Add to cart"
+                >
+                  <AiOutlineShoppingCart size={18} className="text-gray-600" />
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div className="py-2 flex items-center justify-between">
-            <div className="flex">
-              <h5 className={`${styles.productDiscountPrice}`}>
-                {data.originalPrice === 0
-                  ? data.originalPrice
-                  : data.discountPrice}
-                $
-              </h5>
-              <h4 className={`${styles.price}`}>
-                {data.originalPrice ? data.originalPrice + " $" : null}
-              </h4>
+          {/* Discount Badge */}
+          {data.originalPrice > data.discountPrice && (
+            <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+              {Math.round(((data.originalPrice - data.discountPrice) / data.originalPrice) * 100)}% OFF
             </div>
-            <span className="font-[400] text-[17px] text-[#68d284]">
-              {data?.sold_out} sold
+          )}
+        </div>
+
+        {/* Content Container */}
+        <div className="p-4">
+          {/* Shop Name */}
+          <Link to={`/shop/preview/${data?.shop._id}`}>
+            <h5 className="text-sm text-blue-600 font-medium hover:text-blue-700 transition-colors duration-200">
+              {data.shop.name}
+            </h5>
+          </Link>
+
+          {/* Product Name */}
+          <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
+            <h4 className="text-base font-semibold text-gray-800 mt-2 line-clamp-2 hover:text-blue-600 transition-colors duration-200">
+              {data.name}
+            </h4>
+          </Link>
+
+          {/* Ratings */}
+          <div className="flex items-center mt-3">
+            <Ratings rating={data?.ratings} />
+            <span className="text-sm text-gray-500 ml-2">
+              ({data?.ratings ? data.ratings.length : 0} reviews)
             </span>
           </div>
-        </Link>
 
-        {/* side options */}
-        <div>
-          {click ? (
-            <AiFillHeart
-              size={22}
-              className="cursor-pointer absolute right-2 top-5"
-              onClick={() => removeFromWishlistHandler(data)}
-              color={click ? "red" : "#333"}
-              title="Remove from wishlist"
-            />
-          ) : (
-            <AiOutlineHeart
-              size={22}
-              className="cursor-pointer absolute right-2 top-5"
-              onClick={() => addToWishlistHandler(data)}
-              color={click ? "red" : "#333"}
-              title="Add to wishlist"
-            />
-          )}
-          <AiOutlineEye
-            size={22}
-            className="cursor-pointer absolute right-2 top-14"
-            onClick={() => setOpen(!open)}
-            color="#333"
-            title="Quick view"
-          />
-          <AiOutlineShoppingCart
-            size={25}
-            className="cursor-pointer absolute right-2 top-24"
-            onClick={() => addToCartHandler(data._id)}
-            color="#444"
-            title="Add to cart"
-          />
-          {open ? <ProductDetailsCard setOpen={setOpen} data={data} /> : null}
+          {/* Price and Sold Info */}
+          <div className="flex items-center justify-between mt-4">
+            <div className="flex items-center space-x-2">
+              <h5 className="text-lg font-bold text-gray-900">
+                ${data.discountPrice}
+              </h5>
+              {data.originalPrice > data.discountPrice && (
+                <h4 className="text-sm text-gray-500 line-through">
+                  ${data.originalPrice}
+                </h4>
+              )}
+            </div>
+            <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
+              {data?.sold_out || 0} sold
+            </span>
+          </div>
+
+          {/* Stock Status */}
+          <div className="mt-3">
+            {data.stock > 0 ? (
+              <span className="text-sm text-green-600 font-medium">
+                In Stock ({data.stock} available)
+              </span>
+            ) : (
+              <span className="text-sm text-red-600 font-medium">
+                Out of Stock
+              </span>
+            )}
+          </div>
         </div>
+
+        {/* Quick View Modal */}
+        {open && <ProductDetailsCard setOpen={setOpen} data={data} />}
       </div>
     </>
   );
