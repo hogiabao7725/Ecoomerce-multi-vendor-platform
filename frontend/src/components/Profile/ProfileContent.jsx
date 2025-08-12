@@ -23,6 +23,9 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { getAllOrdersOfUser } from "../../redux/actions/order";
+import { HiOutlineShoppingBag } from "react-icons/hi";
+import { HiOutlineReceiptRefund } from "react-icons/hi";
+import { TbAddressBook } from "react-icons/tb";
 
 const ProfileContent = ({ active }) => {
   const { user, error, successMessage } = useSelector((state) => state.user);
@@ -297,14 +300,64 @@ const AllOrders = () => {
     });
 
   return (
-    <div className="pl-8 pt-1">
-      <DataGrid
-        rows={row}
-        columns={columns}
-        pageSize={10}
-        disableSelectionOnClick
-        autoHeight
-      />
+    <div className="w-full">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">My Orders</h2>
+        <p className="text-gray-600">Track and manage all your orders</p>
+      </div>
+
+      {/* Orders Count */}
+      <div className="mb-6">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">Total Orders</h3>
+              <p className="text-2xl font-bold text-blue-600">{orders?.length || 0}</p>
+            </div>
+            <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+              <HiOutlineShoppingBag className="text-white text-xl" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Orders Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <DataGrid
+          rows={row}
+          columns={columns}
+          pageSize={10}
+          disableSelectionOnClick
+          autoHeight
+          className="border-0"
+          sx={{
+            "& .MuiDataGrid-cell": {
+              borderBottom: "1px solid #f3f4f6",
+              padding: "16px",
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "#f8fafc",
+              borderBottom: "2px solid #e2e8f0",
+              fontWeight: "bold",
+            },
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "#f1f5f9",
+            },
+          }}
+        />
+      </div>
+
+      {/* Empty State */}
+      {(!orders || orders.length === 0) && (
+        <div className="text-center py-12">
+          <div className="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+            <HiOutlineShoppingBag className="text-gray-400 text-3xl" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-600 mb-2">No Orders Yet</h3>
+          <p className="text-gray-500">Start shopping to see your orders here</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -385,14 +438,64 @@ const AllRefundOrders = () => {
     });
 
   return (
-    <div className="pl-8 pt-1">
-      <DataGrid
-        rows={row}
-        columns={columns}
-        pageSize={10}
-        autoHeight
-        disableSelectionOnClick
-      />
+    <div className="w-full">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Refund Orders</h2>
+        <p className="text-gray-600">Track your refund requests and their status</p>
+      </div>
+
+      {/* Refund Count */}
+      <div className="mb-6">
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-4 border border-orange-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">Refund Requests</h3>
+              <p className="text-2xl font-bold text-orange-600">{eligibleOrders?.length || 0}</p>
+            </div>
+            <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
+              <HiOutlineReceiptRefund className="text-white text-xl" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Refund Orders Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <DataGrid
+          rows={row}
+          columns={columns}
+          pageSize={10}
+          autoHeight
+          disableSelectionOnClick
+          className="border-0"
+          sx={{
+            "& .MuiDataGrid-cell": {
+              borderBottom: "1px solid #f3f4f6",
+              padding: "16px",
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "#f8fafc",
+              borderBottom: "2px solid #e2e8f0",
+              fontWeight: "bold",
+            },
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "#f1f5f9",
+            },
+          }}
+        />
+      </div>
+
+      {/* Empty State */}
+      {(!eligibleOrders || eligibleOrders.length === 0) && (
+        <div className="text-center py-12">
+          <div className="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+            <HiOutlineReceiptRefund className="text-gray-400 text-3xl" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-600 mb-2">No Refund Requests</h3>
+          <p className="text-gray-500">You don't have any refund requests at the moment</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -470,14 +573,94 @@ const TrackOrder = () => {
     });
 
   return (
-    <div className="pl-8 pt-1">
-      <DataGrid
-        rows={row}
-        columns={columns}
-        pageSize={10}
-        disableSelectionOnClick
-        autoHeight
-      />
+    <div className="w-full">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Track Orders</h2>
+        <p className="text-gray-600">Monitor the status and progress of your orders</p>
+      </div>
+
+      {/* Tracking Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium text-gray-600">Delivered</h3>
+              <p className="text-xl font-bold text-green-600">
+                {orders?.filter(order => order.status === "Delivered").length || 0}
+              </p>
+            </div>
+            <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+              <div className="w-3 h-3 bg-white rounded-full"></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium text-gray-600">Processing</h3>
+              <p className="text-xl font-bold text-blue-600">
+                {orders?.filter(order => order.status === "Processing").length || 0}
+              </p>
+            </div>
+            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+              <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl p-4 border border-yellow-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium text-gray-600">Pending</h3>
+              <p className="text-xl font-bold text-yellow-600">
+                {orders?.filter(order => order.status === "Pending").length || 0}
+              </p>
+            </div>
+            <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
+              <div className="w-3 h-3 bg-white rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Orders Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <DataGrid
+          rows={row}
+          columns={columns}
+          pageSize={10}
+          disableSelectionOnClick
+          autoHeight
+          className="border-0"
+          sx={{
+            "& .MuiDataGrid-cell": {
+              borderBottom: "1px solid #f3f4f6",
+              padding: "16px",
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "#f8fafc",
+              borderBottom: "2px solid #e2e8f0",
+              fontWeight: "bold",
+            },
+            "& .MuiDataGrid-row:hover": {
+              backgroundColor: "#f1f5f9",
+            },
+          }}
+        />
+      </div>
+
+      {/* Empty State */}
+      {(!orders || orders.length === 0) && (
+        <div className="text-center py-12">
+          <div className="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+            <MdTrackChanges className="text-gray-400 text-3xl" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-600 mb-2">No Orders to Track</h3>
+          <p className="text-gray-500">Start shopping to see your order tracking here</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -506,52 +689,67 @@ const ChangePassword = () => {
         toast.error(error.response.data.message);
       });
   };
+  
   return (
-    <div className="w-full px-5">
-      <h1 className="block text-[25px] text-center font-[600] text-[#000000ba] pb-2">
-        Change Password
-      </h1>
-      <div className="w-full">
-        <form
-          aria-required
-          onSubmit={passwordChangeHandler}
-          className="flex flex-col items-center"
-        >
-          <div className=" w-[100%] 800px:w-[50%] mt-5">
-            <label className="block pb-2">Enter your old password</label>
+    <div className="w-full max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Change Password</h2>
+        <p className="text-gray-600">Update your password to keep your account secure</p>
+      </div>
+
+      {/* Password Form */}
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 lg:p-8">
+        <form onSubmit={passwordChangeHandler} className="space-y-6">
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-700">
+              Current Password
+            </label>
             <input
               type="password"
-              className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white"
               required
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
+              placeholder="Enter your current password"
             />
           </div>
-          <div className=" w-[100%] 800px:w-[50%] mt-2">
-            <label className="block pb-2">Enter your new password</label>
+          
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-700">
+              New Password
+            </label>
             <input
               type="password"
-              className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white"
               required
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter your new password"
             />
           </div>
-          <div className=" w-[100%] 800px:w-[50%] mt-2">
-            <label className="block pb-2">Enter your confirm password</label>
+          
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-700">
+              Confirm New Password
+            </label>
             <input
               type="password"
-              className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white"
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm your new password"
             />
-            <input
-              className={`w-[95%] h-[40px] border border-[#3a24db] text-center text-[#3a24db] rounded-[3px] mt-8 cursor-pointer`}
-              required
-              value="Update"
+          </div>
+
+          <div className="flex justify-center pt-4">
+            <button
               type="submit"
-            />
+              className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Update Password
+            </button>
           </div>
         </form>
       </div>
@@ -614,189 +812,188 @@ const Address = () => {
   };
 
   return (
-    <div className="w-full px-5">
-      {open && (
-        <div className="fixed w-full h-screen bg-[#0000004b] top-0 left-0 flex items-center justify-center ">
-          <div className="w-[35%] h-[80vh] bg-white rounded shadow relative overflow-y-scroll">
-            <div className="w-full flex justify-end p-3">
-              <RxCross1
-                size={30}
-                className="cursor-pointer"
-                onClick={() => setOpen(false)}
-              />
+    <div className="w-full">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">My Addresses</h2>
+        <p className="text-gray-600">Manage your delivery addresses</p>
+      </div>
+
+      {/* Add New Address Button */}
+      <div className="flex justify-center mb-8">
+        <button
+          onClick={() => setOpen(true)}
+          className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          + Add New Address
+        </button>
+      </div>
+
+      {/* Addresses List */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {user &&
+          user.addresses.map((item, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-200"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                  <h5 className="font-semibold text-gray-800 capitalize">{item.addressType}</h5>
+                </div>
+                <button
+                  onClick={() => handleDelete(item)}
+                  className="text-red-500 hover:text-red-700 transition-colors duration-200"
+                >
+                  <AiOutlineDelete size={20} />
+                </button>
+              </div>
+              
+              <div className="space-y-2 text-sm text-gray-600">
+                <p className="font-medium">{item.address1}</p>
+                {item.address2 && <p>{item.address2}</p>}
+                <p>{item.city}, {item.country}</p>
+                {item.zipCode && <p>ZIP: {item.zipCode}</p>}
+              </div>
             </div>
-            <h1 className="text-center text-[25px] font-Poppins">
-              Add New Address
-            </h1>
-            <div className="w-full">
-              <form aria-required onSubmit={handleSubmit} className="w-full">
-                <div className="w-full block p-4">
-                  <div className="w-full pb-2">
-                    <label className="block pb-2">Country</label>
-                    <select
-                      name=""
-                      id=""
-                      value={country}
-                      onChange={(e) => setCountry(e.target.value)}
-                      className="w-[95%] border h-[40px] rounded-[5px]"
-                    >
-                      <option value="" className="block border pb-2">
-                        choose your country
+          ))}
+      </div>
+
+      {/* Empty State */}
+      {user && user.addresses.length === 0 && (
+        <div className="text-center py-12">
+          <div className="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+            <TbAddressBook className="text-gray-400 text-3xl" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-600 mb-2">No Addresses Yet</h3>
+          <p className="text-gray-500">Add your first delivery address to get started</p>
+        </div>
+      )}
+
+      {/* Add Address Modal */}
+      {open && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-800">Add New Address</h3>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                >
+                  <RxCross1 size={24} />
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Country</label>
+                  <select
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white"
+                    required
+                  >
+                    <option value="">Choose your country</option>
+                    {Country &&
+                      Country.getAllCountries().map((item) => (
+                        <option key={item.isoCode} value={item.isoCode}>
+                          {item.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">City</label>
+                  <select
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white"
+                    required
+                  >
+                    <option value="">Choose your city</option>
+                    {State &&
+                      State.getStatesOfCountry(country).map((item) => (
+                        <option key={item.isoCode} value={item.isoCode}>
+                          {item.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Address Line 1</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white"
+                    required
+                    value={address1}
+                    onChange={(e) => setAddress1(e.target.value)}
+                    placeholder="Street address, apartment, suite, etc."
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Address Line 2</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white"
+                    value={address2}
+                    onChange={(e) => setAddress2(e.target.value)}
+                    placeholder="Optional additional information"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">ZIP Code</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white"
+                    required
+                    value={zipCode}
+                    onChange={(e) => setZipCode(e.target.value)}
+                    placeholder="Enter ZIP code"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">Address Type</label>
+                  <select
+                    value={addressType}
+                    onChange={(e) => setAddressType(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white"
+                    required
+                  >
+                    <option value="">Choose address type</option>
+                    {addressTypeData.map((item) => (
+                      <option key={item.name} value={item.name}>
+                        {item.name}
                       </option>
-                      {Country &&
-                        Country.getAllCountries().map((item) => (
-                          <option
-                            className="block pb-2"
-                            key={item.isoCode}
-                            value={item.isoCode}
-                          >
-                            {item.name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
+                    ))}
+                  </select>
+                </div>
 
-                  <div className="w-full pb-2">
-                    <label className="block pb-2">Choose your City</label>
-                    <select
-                      name=""
-                      id=""
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      className="w-[95%] border h-[40px] rounded-[5px]"
-                    >
-                      <option value="" className="block border pb-2">
-                        choose your city
-                      </option>
-                      {State &&
-                        State.getStatesOfCountry(country).map((item) => (
-                          <option
-                            className="block pb-2"
-                            key={item.isoCode}
-                            value={item.isoCode}
-                          >
-                            {item.name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-
-                  <div className="w-full pb-2">
-                    <label className="block pb-2">Address 1</label>
-                    <input
-                      type="address"
-                      className={`${styles.input}`}
-                      required
-                      value={address1}
-                      onChange={(e) => setAddress1(e.target.value)}
-                    />
-                  </div>
-                  <div className="w-full pb-2">
-                    <label className="block pb-2">Address 2</label>
-                    <input
-                      type="address"
-                      className={`${styles.input}`}
-                      required
-                      value={address2}
-                      onChange={(e) => setAddress2(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="w-full pb-2">
-                    <label className="block pb-2">Zip Code</label>
-                    <input
-                      type="number"
-                      className={`${styles.input}`}
-                      required
-                      value={zipCode}
-                      onChange={(e) => setZipCode(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="w-full pb-2">
-                    <label className="block pb-2">Address Type</label>
-                    <select
-                      name=""
-                      id=""
-                      value={addressType}
-                      onChange={(e) => setAddressType(e.target.value)}
-                      className="w-[95%] border h-[40px] rounded-[5px]"
-                    >
-                      <option value="" className="block border pb-2">
-                        Choose your Address Type
-                      </option>
-                      {addressTypeData &&
-                        addressTypeData.map((item) => (
-                          <option
-                            className="block pb-2"
-                            key={item.name}
-                            value={item.name}
-                          >
-                            {item.name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-
-                  <div className=" w-full pb-2">
-                    <input
-                      type="submit"
-                      className={`${styles.input} mt-5 cursor-pointer`}
-                      required
-                      readOnly
-                    />
-                  </div>
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-all duration-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  >
+                    Add Address
+                  </button>
                 </div>
               </form>
             </div>
           </div>
         </div>
-      )}
-      <div className="flex w-full items-center justify-between">
-        <h1 className="text-[25px] font-[600] text-[#000000ba] pb-2">
-          My Addresses
-        </h1>
-        <div
-          className={`${styles.button} !rounded-md`}
-          onClick={() => setOpen(true)}
-        >
-          <span className="text-[#fff]">Add New</span>
-        </div>
-      </div>
-      <br />
-      {user &&
-        user.addresses.map((item, index) => (
-          <div
-            className="w-full bg-white h-min 800px:h-[70px] rounded-[4px] flex items-center px-3 shadow justify-between pr-10 mb-5"
-            key={index}
-          >
-            <div className="flex items-center">
-              <h5 className="pl-5 font-[600]">{item.addressType}</h5>
-            </div>
-            <div className="pl-8 flex items-center">
-              <h6 className="text-[12px] 800px:text-[unset]">
-                {item.address1} {item.address2}
-              </h6>
-            </div>
-            <div className="pl-8 flex items-center">
-              <h6 className="text-[12px] 800px:text-[unset]">
-                {user && user.phoneNumber}
-              </h6>
-            </div>
-            <div className="min-w-[10%] flex items-center justify-between pl-8">
-              <AiOutlineDelete
-                size={25}
-                className="cursor-pointer"
-                onClick={() => handleDelete(item)}
-              />
-            </div>
-          </div>
-        ))}
-
-      {user && user.addresses.length === 0 && (
-        <h5 className="text-center pt-8 text-[18px]">
-          You not have any saved address!
-        </h5>
       )}
     </div>
   );
