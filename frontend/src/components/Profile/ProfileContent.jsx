@@ -81,82 +81,106 @@ const ProfileContent = ({ active }) => {
       {/* profile */}
       {active === 1 && (
         <>
-          <div className="flex justify-center w-full">
+          <div className="text-center mb-6 lg:mb-8">
+            <h2 className="text-xl lg:text-2xl font-bold text-gray-800 mb-2 lg:mb-4">Profile Information</h2>
+            <p className="text-gray-600 text-sm lg:text-base">Update your personal information and avatar</p>
+          </div>
+
+          {/* Avatar Section */}
+          <div className="flex justify-center w-full mb-6 lg:mb-8">
             <div className="relative">
-              <img
-                src={`${user?.avatar?.url}`}
-                className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
-                alt=""
-              />
-              <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer absolute bottom-[5px] right-[5px]">
+              <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-full overflow-hidden border-4 border-gradient-to-r from-blue-500 to-purple-600 shadow-lg">
+                <img
+                  src={`${user?.avatar?.url}`}
+                  className="w-full h-full object-cover"
+                  alt="Profile Avatar"
+                />
+              </div>
+              <div className="absolute -bottom-1 -right-1 lg:-bottom-2 lg:-right-2 w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-110">
                 <input
                   type="file"
                   id="image"
                   className="hidden"
                   onChange={handleImage}
                 />
-                <label htmlFor="image">
-                  <AiOutlineCamera />
+                <label htmlFor="image" className="cursor-pointer">
+                  <AiOutlineCamera className="text-white text-sm lg:text-lg" />
                 </label>
               </div>
             </div>
           </div>
-          <br />
-          <br />
-          <div className="w-full px-5">
-            <form onSubmit={handleSubmit} aria-required={true}>
-              <div className="w-full 800px:flex block pb-3">
-                <div className=" w-[100%] 800px:w-[50%]">
-                  <label className="block pb-2">Full Name</label>
+
+          {/* Form Section */}
+          <div className="max-w-4xl mx-auto">
+            <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    Full Name
+                  </label>
                   <input
                     type="text"
-                    className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
+                    className="w-full px-3 lg:px-4 py-2.5 lg:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white text-sm lg:text-base"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    placeholder="Enter your full name"
                   />
                 </div>
-                <div className=" w-[100%] 800px:w-[50%]">
-                  <label className="block pb-2">Email Address</label>
+                
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    Email Address
+                  </label>
                   <input
-                    type="text"
-                    className={`${styles.input} !w-[95%] mb-1 800px:mb-0`}
+                    type="email"
+                    className="w-full px-3 lg:px-4 py-2.5 lg:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white text-sm lg:text-base"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
                   />
                 </div>
               </div>
 
-              <div className="w-full 800px:flex block pb-3">
-                <div className=" w-[100%] 800px:w-[50%]">
-                  <label className="block pb-2">Phone Number</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    Phone Number
+                  </label>
                   <input
-                    type="number"
-                    className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
+                    type="tel"
+                    className="w-full px-3 lg:px-4 py-2.5 lg:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white text-sm lg:text-base"
                     required
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="Enter your phone number"
                   />
                 </div>
 
-                <div className=" w-[100%] 800px:w-[50%]">
-                  <label className="block pb-2">Enter your password</label>
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    New Password
+                  </label>
                   <input
                     type="password"
-                    className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
+                    className="w-full px-3 lg:px-4 py-2.5 lg:py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white focus:bg-white text-sm lg:text-base"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter new password"
                   />
                 </div>
               </div>
-              <input
-                className={`w-[250px] h-[40px] border border-[#3a24db] text-center text-[#3a24db] rounded-[3px] mt-8 cursor-pointer`}
-                required
-                value="Update"
-                type="submit"
-              />
+
+              <div className="flex justify-center pt-4 lg:pt-6">
+                <button
+                  type="submit"
+                  className="px-6 lg:px-8 py-2.5 lg:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm lg:text-base"
+                >
+                  Update Profile
+                </button>
+              </div>
             </form>
           </div>
         </>

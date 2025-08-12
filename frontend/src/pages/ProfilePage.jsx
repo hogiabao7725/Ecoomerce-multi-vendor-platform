@@ -11,17 +11,31 @@ const ProfilePage = () => {
   const [active, setActive] = useState(1);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
       {loading ? (
         <Loader />
       ) : (
         <>
           <Header />
-          <div className={`${styles.section} flex bg-[#f5f5f5] py-10`}>
-            <div className="w-[50px] 800px:w-[335px] sticky 800px:mt-0 mt-[18%]">
-              <ProfileSideBar active={active} setActive={setActive} />
+          <div className="container mx-auto px-4 py-6 lg:py-8">
+            <div className="mb-6 lg:mb-8">
+              <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-2 text-center lg:text-left">My Profile</h1>
+              <p className="text-gray-600 text-center lg:text-left">Manage your account settings and preferences</p>
             </div>
-            <ProfileContent active={active} />
+            
+            <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+              {/* Sidebar */}
+              <div className="lg:w-80 flex-shrink-0 order-2 lg:order-1">
+                <ProfileSideBar active={active} setActive={setActive} />
+              </div>
+              
+              {/* Main Content */}
+              <div className="flex-1 order-1 lg:order-2">
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 lg:p-6">
+                  <ProfileContent active={active} />
+                </div>
+              </div>
+            </div>
           </div>
         </>
       )}
