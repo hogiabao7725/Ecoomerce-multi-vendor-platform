@@ -25,16 +25,16 @@ const ProductDetailsPage = () => {
   }, [allProducts, allEvents]);
 
   return (
-    <div>
+    <div className="bg-gray-50 min-h-screen">
       <Header />
-      <ProductDetails data={data} />
-        {
-          !eventData && (
-            <>
-            {data && <SuggestedProduct data={data} />}
-            </>
-          )
-        }
+      <div className="w-full max-w-none px-2 sm:px-4 lg:px-6 py-4">
+        <ProductDetails data={data} />
+        {!eventData && data && (
+          <div className="mt-8">
+            <SuggestedProduct data={data} />
+          </div>
+        )}
+      </div>
       <Footer />
     </div>
   );

@@ -14,24 +14,28 @@ const SuggestedProduct = ({ data }) => {
     setProductData(d);
   }, []);
 
+  if (!productData || productData.length === 0) {
+    return null;
+  }
+
   return (
-    <div>
-      {data ? (
-        <div className={`p-4 ${styles.section}`}>
-          <h2
-            className={`${styles.heading} text-[25px] font-[500] border-b mb-5`}
-          >
-            Related Product
-          </h2>
-          <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
-             {
-                productData && productData.map((i,index) => (
-                    <ProductCard data={i} key={index} />
-                ))
-             }
+    <div className="bg-white rounded-lg shadow-md p-4 w-full">
+      <div className="text-center mb-4">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          Related Products
+        </h2>
+        <p className="text-gray-600">
+          More products you might like
+        </p>
       </div>
-        </div>
-      ) : null}
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {productData && productData.map((i, index) => (
+          <div key={index}>
+            <ProductCard data={i} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
