@@ -6,6 +6,7 @@ import styles from "../../styles/styles";
 import Loader from "../Layout/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
+import { FaMapMarkerAlt, FaPhone, FaBox, FaStar, FaCalendarAlt, FaHeart, FaUsers } from "react-icons/fa";
 
 const ShopInfo = ({ isOwner }) => {
   const [data,setData] = useState({});
@@ -48,59 +49,104 @@ const ShopInfo = ({ isOwner }) => {
     isLoading  ? (
       <Loader />
     ) : (
-      <div>
-      <div className="w-full py-5">
-        <div className="w-full flex item-center justify-center">
-          <img
-            src={`${data.avatar?.url}`}
-            alt=""
-            className="w-[150px] h-[150px] object-cover rounded-full"
-          />
-        </div>
-        <h3 className="text-center py-2 text-[20px]">{data.name}</h3>
-        <p className="text-[16px] text-[#000000a6] p-[10px] flex items-center">
-          {data.description}
-        </p>
-      </div>
-      <div className="p-3">
-        <h5 className="font-[600]">Address</h5>
-        <h4 className="text-[#000000a6]">{data.address}</h4>
-      </div>
-      <div className="p-3">
-        <h5 className="font-[600]">Phone Number</h5>
-        <h4 className="text-[#000000a6]">{data.phoneNumber}</h4>
-      </div>
-      <div className="p-3">
-        <h5 className="font-[600]">Total Products</h5>
-        <h4 className="text-[#000000a6]">{products && products.length}</h4>
-      </div>
-      <div className="p-3">
-        <h5 className="font-[600]">Shop Ratings</h5>
-        <h4 className="text-[#000000b0]">{averageRating}/5</h4>
-      </div>
-      <div className="p-3">
-        <h5 className="font-[600]">Joined On</h5>
-        <h4 className="text-[#000000b0]">{data?.createdAt?.slice(0, 10)}</h4>
-      </div>
-      {isOwner && (
-        <div className="py-3 px-4">
-           <Link to="/settings">
-           <div className={`${styles.button} !w-full !h-[42px] !rounded-[5px]`}>
-            <span className="text-white">Edit Shop</span>
-          </div>
-           </Link>
-          <div className={`${styles.button} !w-full !h-[42px] !rounded-[5px]`}
-          onClick={logoutHandler}
-          >
-            <span className="text-white">Log Out</span>
+      <div className="space-y-6">
+        {/* Shop Avatar & Name */}
+        <div className="text-center">
+          <div className="relative inline-block group">
+            <div className="relative">
+              <img
+                src={`${data.avatar?.url}`}
+                alt=""
+                className="w-28 h-28 object-cover rounded-full border-4 border-white shadow-xl group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-green-500 rounded-full border-3 border-white shadow-lg flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+            </div>
+            <h3 className="text-xl font-bold text-gray-800 mt-4 mb-3">{data.name}</h3>
+            <p className="text-gray-600 text-sm leading-relaxed px-2 line-clamp-3">
+              {data.description}
+            </p>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Shop Stats */}
+        <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl p-5 border border-blue-100">
+          <h4 className="text-sm font-semibold text-gray-700 mb-3 text-center">Shop Statistics</h4>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center group">
+              <div className="w-12 h-12 mx-auto mb-2 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                <FaBox className="text-blue-600 text-lg" />
+              </div>
+              <div className="text-2xl font-bold text-blue-600">{products && products.length}</div>
+              <div className="text-xs text-gray-600">Products</div>
+            </div>
+            <div className="text-center group">
+              <div className="w-12 h-12 mx-auto mb-2 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                <FaStar className="text-green-600 text-lg" />
+              </div>
+              <div className="text-2xl font-bold text-green-600">{averageRating.toFixed(1)}</div>
+              <div className="text-xs text-gray-600">Rating</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Shop Details */}
+        <div className="space-y-4">
+          <h4 className="text-sm font-semibold text-gray-700 mb-3">Contact Information</h4>
+          
+          <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-100 hover:shadow-md transition-shadow">
+            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <FaMapMarkerAlt className="text-red-500" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h5 className="font-semibold text-gray-800 text-sm">Address</h5>
+              <p className="text-gray-600 text-sm truncate">{data.address}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border border-blue-100 hover:shadow-md transition-shadow">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <FaPhone className="text-blue-500" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h5 className="font-semibold text-gray-800 text-sm">Phone</h5>
+              <p className="text-gray-600 text-sm">{data.phoneNumber}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-purple-50 to-violet-50 rounded-xl border border-purple-100 hover:shadow-md transition-shadow">
+            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <FaCalendarAlt className="text-purple-500" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h5 className="font-semibold text-gray-800 text-sm">Member Since</h5>
+              <p className="text-gray-600 text-sm">{data?.createdAt?.slice(0, 10)}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Owner Actions */}
+        {isOwner && (
+          <div className="space-y-3 pt-6 border-t border-gray-200">
+            <Link to="/settings">
+              <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                Edit Shop
+              </button>
+            </Link>
+            <button 
+              onClick={logoutHandler}
+              className="w-full bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              Log Out
+            </button>
+          </div>
+        )}
+      </div>
     )
    }
    </>
-  );
-};
+  )
+}
 
-export default ShopInfo;
+export default ShopInfo
